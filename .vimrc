@@ -115,6 +115,7 @@ let mapleader = "\<Space>"
 let g:unite_enable_start_insert=1
 let g:unite_source_history_yank_enable=1
 let g:unite_source_file_mru_limit=200
+call unite#custom_default_action('source/bookmark/directory','vimfiler')
 if s:dein_enabled && dein#tap("unite.vim")
   nnoremap [unite] <Nop>
   nmap <Leader>f [unite]
