@@ -111,14 +111,19 @@ endif
 let g:vimproc#download_windows_dll=1
 
 let mapleader = "\<Space>"
+"unite mode with starting insert mode.
+let g:unite_enable_start_insert=1
+let g:unite_source_history_yank_enable=1
+let g:unite_source_file_mru_limit=200
 if s:dein_enabled && dein#tap("unite.vim")
   nnoremap [unite] <Nop>
   nmap <Leader>f [unite]
   nnoremap <silent> [unite]b :Unite buffer<CR>
   nnoremap <silent> [unite]f :Unite file<CR>
   nnoremap <silent> [unite]a :Unite bookmark<CR>
-  nnoremap <silent> [unite]m :Unite file_mru<CR>
+  nnoremap <silent> [unite]m :Unite file_mru buffer<CR>
   nnoremap <silent> [unite]n :Unite file/new<CR>
+  nnoremap <silent> [unite]y :Unite history/yank<CR>
 endif
 
 "filetype plugin indent on
