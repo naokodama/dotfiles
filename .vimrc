@@ -10,16 +10,6 @@ set fileformats=unix,dos,mac
 scriptencoding utf-8
 " set encoding はscriptencodingより前に記述しなければならない
 
-" plugins下のディレクトリをruntimepathへ追加する。
-for s:path in split(glob($VIM.'/plugins/*'), '\n')
-  if s:path !~# '\~$' && isdirectory(s:path)
-    let &runtimepath = &runtimepath.','.s:path
-  end
-endfor
-unlet s:path
-
-"filetype off
-"filetype plugin indent off
 " Flags
 let s:use_dein = 1
 
@@ -35,6 +25,11 @@ if has("vim_starting")
     call system("mkdir " . s:vimdir)
   endif
 endif
+
+" hook用
+augroup MyAutoCmd
+    autocmd!
+augroup END
 
 " dein
 let s:dein_enabled  = 0
@@ -55,11 +50,11 @@ if s:use_dein && v:version >= 704
     call system("git clone " . s:dein_repo . " " . s:dein_repo_dir)
   endif
   let &runtimepath = &runtimepath . "," . s:dein_repo_dir
-
   " Begin plugin part
-  call dein#begin(s:dein_dir)
+  if dein#load_state(s:dein_dir)
+    call dein#begin(s:dein_dir)
   " Check cache
-"  if dein#load_cache()
+  "if dein#load_cache()
 
     call dein#add('Shougo/dein.vim')
 
@@ -96,35 +91,51 @@ if s:use_dein && v:version >= 704
     call dein#add('tomasr/molokai')
     call dein#add('fsouza/cobol.vim')
     call dein#add('scrooloose/nerdtree')
-"    call dein#save_cache()
-"  endif
+    call dein#add('itchyny/lightline.vim')
+    "call dein#add('nathanaelkane/vim-indent-guides')
+    call dein#add('Yggdroot/indentLine')
+    call dein#add('tpope/vim-surround')
+    call dein#add('ctrlpvim/ctrlp.vim')
+    call dein#add('Townk/vim-autoclose')
+    call dein#add('tpope/vim-fugitive')
+    "call dein#save_cache()
+  "endif
 
-  call dein#end()
+    call dein#end()
+    call dein#save_state()
+  endif
 
   " Installation check.
   if dein#check_install()
     call dein#install()
   endif
 endif
+
 " vimprocをダンロードする設定を追加
 let g:vimproc#download_windows_dll=1
 
 let mapleader = "\<Space>"
+
+if dein#tap('unite.vim')
+    function! s:unite_on_source() abort
+        call unite#custom#default_action('source/bookmark/directory','vimfiler')
+    endfunction
+
+    execute 'autocmd MyAutoCmd User' 'dein#source#' . g:dein#name
+        \ 'call s:unite_on_source()'
+endif
 "unite mode with starting insert mode.
 let g:unite_enable_start_insert=1
 let g:unite_source_history_yank_enable=1
 let g:unite_source_file_mru_limit=200
-call unite#custom_default_action('source/bookmark/directory','vimfiler')
-if s:dein_enabled && dein#tap("unite.vim")
-  nnoremap [unite] <Nop>
-  nmap <Leader>f [unite]
-  nnoremap <silent> [unite]b :Unite buffer<CR>
-  nnoremap <silent> [unite]f :Unite file<CR>
-  nnoremap <silent> [unite]a :Unite bookmark<CR>
-  nnoremap <silent> [unite]m :Unite file_mru buffer<CR>
-  nnoremap <silent> [unite]n :Unite file/new<CR>
-  nnoremap <silent> [unite]y :Unite history/yank<CR>
-endif
+nnoremap [unite] <Nop>
+nmap <Leader>f [unite]
+nnoremap <silent> [unite]b :Unite buffer<CR>
+nnoremap <silent> [unite]f :Unite file<CR>
+nnoremap <silent> [unite]a :Unite bookmark<CR>
+nnoremap <silent> [unite]m :Unite file_mru buffer<CR>
+nnoremap <silent> [unite]n :Unite file/new<CR>
+nnoremap <silent> [unite]y :Unite history/yank<CR>
 
 "filetype plugin indent on
 "filetype on
@@ -144,10 +155,17 @@ endif
 "backup file directory
 let &backupdir=s:backup_dir
 "color theme
+colorscheme molokai
 syntax on
 
+set autoread
+set confirm
+set hidden
+
 "======indent setting======
-set tabstop=2
+set tabstop=4
+set shiftwidth=4
+set softtabstop=2
 set smartindent "auto indent
 set expandtab "use space instead of tab
 "==========================
@@ -178,15 +196,14 @@ set wrapscan "back to top
 nnoremap <ESC><ESC> :nohlsearch<CR>
 " result hilight
 set hlsearch
+set incsearch
 "===========================
-
 
 "====== mouse setting ======
 set mouse=a
 set nomousefocus
 set mousehide
 "===========================
-colorscheme molokai
 
 " フォント設定:
 "
@@ -284,3 +301,80 @@ autocmd BufNewFile,BufReadPost *.cob set filetype=cobol
 
 " clipboard
 set clipboard=unnamed
+
+"====== neocomplete setting ======
+"Note: This option must be set in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
+" Disable AutoComplPop.
+let g:acp_enableAtStartup = 0
+" 候補の1番目を選択状態でポップアップ
+let g:neocomplete#enable_auto_select = 0
+" Use neocomplete.
+let g:neocomplete#enable_at_startup = 1
+" Use smartcase.
+let g:neocomplete#enable_smart_case = 1
+" Set minimum syntax keyword length.
+let g:neocomplete#sources#syntax#min_keyword_length = 2
+let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+
+" Define dictionary.
+let g:neocomplete#sources#dictionary#dictionaries = {
+    \ 'default' : '',
+    \ 'vimshell' : $HOME.'/.vimshell_hist',
+    \ 'scheme' : $HOME.'/.gosh_completions'
+        \ }
+
+" Define keyword.
+if !exists('g:neocomplete#keyword_patterns')
+    let g:neocomplete#keyword_patterns = {}
+endif
+let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+
+" Plugin key-mappings.
+inoremap <expr><C-g>     neocomplete#undo_completion()
+inoremap <expr><C-l>     neocomplete#complete_common_string()
+
+" Recommended key-mappings.
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+  return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
+  " For no inserting <CR> key.
+  "return pumvisible() ? "\<C-y>" : "\<CR>"
+endfunction
+" <TAB>: completion.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+" Close popup by <Space>.
+"inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
+
+" AutoComplPop like behavior.
+"let g:neocomplete#enable_auto_select = 1
+
+" Shell like behavior(not recommended).
+"set completeopt+=longest
+"let g:neocomplete#enable_auto_select = 1
+"let g:neocomplete#disable_auto_complete = 1
+"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
+
+" Enable omni completion.
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+" Enable heavy omni completion.
+if !exists('g:neocomplete#sources#omni#input_patterns')
+  let g:neocomplete#sources#omni#input_patterns = {}
+endif
+"let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+"let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+"let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+
+" For perlomni.vim setting.
+" https://github.com/c9s/perlomni.vim
+let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+"=================================
+
