@@ -58,7 +58,6 @@ if s:use_dein && v:version >= 704
 
   " Begin plugin part
   call dein#begin(s:dein_dir)
-"  call dein#begin('C:\Users\nao\.vim\dein')
   " Check cache
 "  if dein#load_cache()
 
