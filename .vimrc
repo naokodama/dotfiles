@@ -304,6 +304,7 @@ set clipboard=unnamed
 
 "====== neocomplete setting ======
 "Note: This option must be set in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
+let g:neocomplete#force_overwrite_completefunc = 1
 " Disable AutoComplPop.
 let g:acp_enableAtStartup = 0
 " 候補の1番目を選択状態でポップアップ
@@ -313,7 +314,7 @@ let g:neocomplete#enable_at_startup = 1
 " Use smartcase.
 let g:neocomplete#enable_smart_case = 1
 " Set minimum syntax keyword length.
-let g:neocomplete#sources#syntax#min_keyword_length = 2
+let g:neocomplete#sources#syntax#min_keyword_length = 3
 let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
 
 " Define dictionary.
@@ -376,5 +377,9 @@ endif
 " For perlomni.vim setting.
 " https://github.com/c9s/perlomni.vim
 let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-"=================================
+
+"====== jvgrep setting ======
+" grep をjvgrepに置き換える
+set grepprg=jvgrep
+"============================
 
