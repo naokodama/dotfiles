@@ -168,6 +168,11 @@ set shiftwidth=4
 set softtabstop=2
 set smartindent "auto indent
 set expandtab "use space instead of tab
+"indent-line
+let g:indentLine_enabled = 1
+let g:indentLine_color_term = 111
+let g:indentLine_color_gui = '#708090'
+let g:indentLine_char = '|'
 "==========================
 
 " not make swap file
@@ -183,6 +188,21 @@ set formatoptions=q
 set showmatch "emphasize the brackets of the pair
 autocmd FocusGained * set transparency=0
 autocmd FocusLost * set transparency=0
+set nocursorcolumn
+set nocursorline
+
+" カーソル行をハイライト
+" set cursorline
+" hi cursorline term=reverse cterm=none ctermbg=232 ctermfg=NONE
+" hi Cursor guifg=black ctermfg=black ctermbg=black
+" hi Comment ctermfg=27
+" 
+" "カレントウィンドウにのみ罫線を引く
+" augroup cch
+" autocmd! cch
+"  autocmd WinLeave * set nocursorline
+"  autocmd WinEnter,BufRead * set cursorline
+" augroup END
 "==========================
 
 "command line auto complete with tab key
