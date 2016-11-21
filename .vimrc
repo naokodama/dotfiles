@@ -131,14 +131,13 @@ let g:unite_source_file_mru_limit=200
 nnoremap [unite] <Nop>
 nmap <Leader>f [unite]
 nnoremap <silent> [unite]b :Unite buffer<CR>
-nnoremap <silent> [unite]f :Unite file<CR>
+"nnoremap <silent> [unite]f :Unite file<CR>
+nnoremap <silent> [unite]f :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
 nnoremap <silent> [unite]a :Unite bookmark<CR>
 nnoremap <silent> [unite]m :Unite file_mru buffer<CR>
 nnoremap <silent> [unite]n :Unite file/new<CR>
 nnoremap <silent> [unite]y :Unite history/yank<CR>
 
-"filetype plugin indent on
-"filetype on
 let s:undo_dir=$VIM . "/undo"
 if ! isdirectory(s:undo_dir)
   call system("mkdir " . s:undo_dir)
@@ -155,8 +154,8 @@ endif
 "backup file directory
 let &backupdir=s:backup_dir
 "color theme
-colorscheme molokai
 syntax on
+colorscheme molokai
 
 set autoread
 set confirm
@@ -333,6 +332,7 @@ let g:neocomplete#enable_auto_select = 0
 let g:neocomplete#enable_at_startup = 1
 " Use smartcase.
 let g:neocomplete#enable_smart_case = 1
+let g:neocomplete#max_list = 10
 " Set minimum syntax keyword length.
 let g:neocomplete#sources#syntax#min_keyword_length = 3
 let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
@@ -403,3 +403,5 @@ let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 set grepprg=jvgrep
 "============================
 
+filetype plugin indent on
+filetype on
