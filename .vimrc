@@ -405,3 +405,20 @@ set grepprg=jvgrep
 
 filetype plugin indent on
 filetype on
+
+"===== tags ======
+" ファイルタイプ毎にtagsの読み込みファイルを変える
+function! ReadTags(type)
+    execute "set tags=./." . a:type . "_tags;./.tags;"
+endfunction
+
+augroup TagsAutoCmd
+    autocmd!
+    autocmd BufEnter * :call ReadTags(&filetype)
+augroup END
+
+nnoremap <C-]> g<C-]>
+nnoremap <C-h> :vsp<CR> :exe("tjump ".expand('<cword>'))<CR>
+nnoremap <C-k> :split<CR> :exe("tjump ".expand('<cword>'))<CR>
+"==================
+
