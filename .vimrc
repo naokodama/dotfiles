@@ -405,3 +405,5 @@ set grepprg=jvgrep
 
 filetype plugin indent on
 filetype on
+
+set backspace=indent,eol,start
