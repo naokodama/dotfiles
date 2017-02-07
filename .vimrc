@@ -406,7 +406,6 @@ set grepprg=jvgrep
 filetype plugin indent on
 filetype on
 
-<<<<<<< HEAD
 set backspace=indent,eol,start
 =======
 "===== tags ======
@@ -425,4 +424,3 @@ nnoremap <C-h> :vsp<CR> :exe("tjump ".expand('<cword>'))<CR>
 nnoremap <C-k> :split<CR> :exe("tjump ".expand('<cword>'))<CR>
 "==================
 
->>>>>>> 22d7260504375bfff7e9211a969b325a75ca69bd
